@@ -12,16 +12,16 @@ def show(body: str):
         
         # 特殊字符解析
         if body[i:].startswith("&lt;"):
-            # print("<", end="")
+            print("<", end="")
             i += 4
             continue     
         elif body[i:].startswith("&gt;"):
-            # print(">", end="")
+            print(">", end="")
             i += 4
             continue
         else:
-            # print(c, end="")
-            print("", end="")
+            print(c, end="")
+            # print("", end="")
             
             
         i += 1
