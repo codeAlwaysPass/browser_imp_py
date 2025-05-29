@@ -11,6 +11,16 @@ cache = {}
 
 class URL:
     def __init__(self, url):
+        # 处理url不合规的情况
+        if url == "about:blank":
+            self.scheme = "about"
+            self.host = ""
+            self.path = ""
+            self.port = None
+            self.blank = True
+            return
+        
+        self.blank = False
         # 将传入的url拆分为协议和剩余部分
         self.scheme, url = url.split("://", 1)
         # 检查协议是否在白名单内
@@ -55,6 +65,10 @@ class URL:
         return body
     
     def request(self, method = "GET", redirect_limit = 10):
+        # 处理空白页情况
+        if self.blank:
+            return ""
+        
         # 生成连接键
         key = (self.scheme, self.host, self.port)
         # 生成缓存键
@@ -104,6 +118,7 @@ class URL:
         # 在请求头中添加允许的压缩方式
         request += "Accept-Encoding: gzip\r\n"
         
+        # 最后一次空行告诉浏览器请求已经发送完毕
         request += "\r\n"
         
         # 发送请求到对应域名的服务器
@@ -167,7 +182,7 @@ class URL:
             else:
                 raise Exception("不支持 Transfer-Encoding")
         else:
-            # 在响应头中获取可以读取的指定字节数
+            # 在响应头中获取可以读取的指定字节数, content-length是说明接下来的body有多少字节
             length = int(response_headers.get("content-length", 0))
             # 检验缓存，减少输出量，便于调试
             # length = 1024
