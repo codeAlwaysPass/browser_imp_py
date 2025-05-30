@@ -52,21 +52,25 @@ class Browser:
             # (y-步长) 时, 字的渲染位置会比原始位置出现偏移, 这就模拟出了滚动效果
             self.canvas.create_text(x, y - self.scroll, text=c)
             
-            # 绘制滚动条
-            content_height = self.getContentHeight()
-            if content_height <= HEIGHT:
-                return
+            self.drawScrollBar()
             
-            # 计算滚动条高度
-            bar_height = HEIGHT * HEIGHT // content_height
-            # 计算滚动条顶部位置
-            bar_top = self.scroll * HEIGHT // content_height
-            
-            self.canvas.create_rectangle(
-                WIDTH - 10, bar_top, WIDTH, bar_top + bar_height,
-                fill="#f8f8f8",
-                outline=""
-            )
+    
+    # 绘制滚动条   
+    def drawScrollBar(self):
+        content_height = self.getContentHeight()
+        if content_height <= HEIGHT:
+            return
+        
+        # 计算滚动条高度
+        bar_height = HEIGHT * HEIGHT // content_height
+        # 计算滚动条顶部位置
+        bar_top = self.scroll * HEIGHT // content_height
+        
+        self.canvas.create_rectangle(
+            WIDTH - 10, bar_top, WIDTH, bar_top + bar_height,
+            fill="gray",
+            outline=""
+        )
     
     # 支持emoji
     def renderEmoji():
@@ -101,7 +105,8 @@ class Browser:
             self.scrolldown(e)
         else:
             self.scrollup(e)
-        
+    
+    # 加载url函数, 首次渲染
     def load(self, url: URL):
         
         body = url.request()
